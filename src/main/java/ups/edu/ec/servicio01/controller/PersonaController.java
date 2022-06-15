@@ -7,6 +7,7 @@ import ups.edu.ec.servicio01.model.Persona;
 import ups.edu.ec.servicio01.service.PersonaService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class PersonaController {
@@ -14,7 +15,15 @@ public class PersonaController {
     PersonaService personaService;
 
     @GetMapping("/personas")
-    public List<Persona> findAll() {
+    public List<Persona> findAll(@RequestHeader(value = "UPS-VERSION", required = false) String version) {
+        if(version != null) {
+            if(version.equals("1")) {
+                return this.personaService.findAll()
+                        .stream().filter(p -> p.getPerCodigo() < 4)
+                        .collect(Collectors.toList());
+            }
+        }
+
         return this.personaService.findAll();
     }
 
