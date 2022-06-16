@@ -1,7 +1,6 @@
-package ups.edu.ec.servicio01.controller;
+package ups.edu.ec.servicio01.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ups.edu.ec.servicio01.model.Persona;
 import ups.edu.ec.servicio01.service.PersonaService;
@@ -10,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-public class PersonaController {
+public class PersonaREST {
     @Autowired
     PersonaService personaService;
 
@@ -22,12 +21,18 @@ public class PersonaController {
                         .stream().filter(p -> p.getPerCodigo() < 4)
                         .collect(Collectors.toList());
             }
+            if(version.equals("2")) {
+                return this.personaService.findAll()
+                        .stream().filter(p -> p.getPerCodigo() < 3)
+                        .collect(Collectors.toList());
+            }
         }
+
 
         return this.personaService.findAll();
     }
 
-    @PostMapping(path="/persona",consumes="application/json")
+    @PostMapping(path="/personas",consumes="application/json")
     public Persona save(@RequestBody Persona persona){
         return this.personaService.save(persona);
     }
